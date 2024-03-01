@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form Validation</title>
+<style>
+    .error-message {
+        color: red;
+    }
+</style>
+</head>
+<body>
+
+<form id="myForm">
+    <label for="inputField">Enter Data:</label><br>
+    <input type="text" id="inputField" name="inputField"><br>
+    <span id="error-message" class="error-message"></span><br>
+    <input type="submit" value="Submit">
+</form>
+
+<div id="response"></div>
+
+<script>
+document.getElementById("myForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Prevent the form from submitting
+
+    // Get the input field value
+    var inputFieldValue = document.getElementById("inputField").value;
+
+    // Validate if the field is blank
+    if (inputFieldValue.trim() === '') {
+        document.getElementById("error-message").innerText = "Field cannot be blank.";
+        return;
+    }
+
+    // Validate the length
+    if (inputFieldValue.length < 5) {
+        document.getElementById("error-message").innerText = "Minimum length should be 5 characters.";
+        return;
+    }
+
+    // If validation passes, submit the form via AJAX
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "process.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            document.getElementById("response").innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send("inputField=" + inputFieldValue);
+});
+
+// Clear error message when input field reaches the correct length
+document.getElementById("inputField").addEventListener("input", function() {
+    var inputFieldValue = this.value;
+    if (inputFieldValue.length >= 5) {
+        document.getElementById("error-message").innerText = "";
+    }
+});
+</script>
+
+</body>
+</html>
